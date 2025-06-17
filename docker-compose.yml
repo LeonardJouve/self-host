@@ -42,12 +42,14 @@ services:
             - AUTHENTIK_POSTGRESQL__NAME=${POSTGRES_DB}
             - AUTHENTIK_POSTGRESQL__PASSWORD=${POSTGRES_PASSWORD}
             - AUTHENTIK_ERROR_REPORTING__ENABLED=true
+            - AUTHENTIK_DISABLE_STARTUP_ANALYTICS=true
+            - AUTHENTIK_ERROR_REPORTING__ENABLED=false
         volumes:
             - ./media:/media
             - ./custom-templates:/templates
         ports:
-            - "${AUTHENTIK_HTTP_PORT:-9000}:9000"
-            - "${AUTHENTIK_HTTPS_PORT:-9443}:9443"
+            - "${AUTHENTIK_HTTP_PORT}:9000"
+            - "${AUTHENTIK_HTTPS_PORT}:9443"
         depends_on:
             postgresql:
                 condition: service_healthy
