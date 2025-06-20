@@ -1,10 +1,10 @@
-data "authentik_group" "loki" {
+resource "authentik_group" "loki" {
     name = "loki"
 }
 
 resource "authentik_policy_binding" "loki_policy_binding" {
     target = authentik_application.loki_application.uuid
-    group  = data.authentik_group.loki.id
+    group  = authentik_group.loki.id
     order  = 0
 }
 
