@@ -70,13 +70,9 @@ services:
             - AUTHENTIK_POSTGRESQL__PASSWORD=${POSTGRES_PASSWORD}
             - AUTHENTIK_DISABLE_STARTUP_ANALYTICS=true
             - AUTHENTIK_ERROR_REPORTING__ENABLED=false
-        # `user: root` and the docker socket volume are optional.
-        # See more for the docker socket integration here:
-        # https://goauthentik.io/docs/outposts/integrations/docker
-        # Removing `user: root` also prevents the worker from fixing the permissions
-        # on the mounted folders, so when removing this make sure the folders have the correct UID/GID
-        # (1000:1000 by default)
-        # user: root
+            - AUTHENTIK_BOOTSTRAP_PASSWORD=${AUTHENTIK_BOOTSTRAP_PASSWORD}
+            - AUTHENTIK_BOOTSTRAP_EMAIL=${AUTHENTIK_BOOTSTRAP_EMAIL}
+            - AUTHENTIK_BOOTSTRAP_TOKEN=${AUTHENTIK_BOOTSTRAP_TOKEN}
         volumes:
             - ${XDG_RUNTIME_DIR}/podman/podman.sock:/var/run/docker.sock
             - media:/media
