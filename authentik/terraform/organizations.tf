@@ -7,9 +7,9 @@ resource "random_uuid" "organization_ids" {
 
 resource "authentik_group" "groups" {
     for_each   = var.organizations
-    name       = each.value.name
+    name       = each.key
     users      = flatten([
-        for username in each.value.usernames : [
+        for username in each.value : [
             for user in data.authentik_users.all.users : user.id if u.username == username
         ]
     ])
