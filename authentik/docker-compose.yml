@@ -46,6 +46,7 @@ services:
             - AUTHENTIK_BOOTSTRAP_PASSWORD=${AUTHENTIK_BOOTSTRAP_PASSWORD}
             - AUTHENTIK_BOOTSTRAP_EMAIL=${AUTHENTIK_BOOTSTRAP_EMAIL}
             - AUTHENTIK_BOOTSTRAP_TOKEN=${AUTHENTIK_BOOTSTRAP_TOKEN}
+            - AUTHENTIK_HOST=${AUTHENTIK_HOST}
         volumes:
             - media:/media
             - custom-templates:/templates
@@ -73,6 +74,7 @@ services:
             - AUTHENTIK_BOOTSTRAP_PASSWORD=${AUTHENTIK_BOOTSTRAP_PASSWORD}
             - AUTHENTIK_BOOTSTRAP_EMAIL=${AUTHENTIK_BOOTSTRAP_EMAIL}
             - AUTHENTIK_BOOTSTRAP_TOKEN=${AUTHENTIK_BOOTSTRAP_TOKEN}
+            - AUTHENTIK_HOST=${AUTHENTIK_HOST}
         volumes:
             - ${XDG_RUNTIME_DIR}/podman/podman.sock:/var/run/docker.sock
             - media:/media
