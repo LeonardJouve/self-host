@@ -21,7 +21,7 @@ resource "authentik_provider_oauth2" "grafana_oauth2_provider" {
     client_id          = random_id.grafana_client_id.hex
     authorization_flow = data.authentik_flow.default-authorization-flow.id
     invalidation_flow  = data.authentik_flow.default-invalidation-flow.id
-    redirect_uris      = [var.grafana_url]
+    redirect_uris      = [var.grafana_url + "/login/generic_oauth"]
     property_mappings  = [
         data.authentik_property_mapping_provider_scope.email_mapping.id,
         data.authentik_property_mapping_provider_scope.profile_mapping.id,
