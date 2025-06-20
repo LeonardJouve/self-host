@@ -60,8 +60,8 @@ resource "authentik_provider_proxy" "loki_provider_proxy" {
     property_mappings  = [
         authentik_property_mapping_provider_scope.loki_property_mapping.id,
         data.authentik_property_mapping_provider_scope.entitlements_mapping.id,
-        data.authentik_property_mapping_provider_scope.email_mapping.id,
         data.authentik_property_mapping_provider_scope.openid_mapping.id,
+        data.authentik_property_mapping_provider_scope.email_mapping.id,
         data.authentik_property_mapping_provider_scope.profile_mapping.id,
         data.authentik_property_mapping_provider_scope.ak_proxy_mapping.id,
     ]
