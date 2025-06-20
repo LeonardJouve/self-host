@@ -20,5 +20,5 @@ variable "organizations" {
         name      = string
         usernames = list(string)
     }))
-    default = {}
+    default = []
 }
