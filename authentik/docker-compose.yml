@@ -41,9 +41,11 @@ services:
             - AUTHENTIK_POSTGRESQL__USER=${POSTGRES_USER}
             - AUTHENTIK_POSTGRESQL__NAME=${POSTGRES_DB}
             - AUTHENTIK_POSTGRESQL__PASSWORD=${POSTGRES_PASSWORD}
-            - AUTHENTIK_ERROR_REPORTING__ENABLED=true
             - AUTHENTIK_DISABLE_STARTUP_ANALYTICS=true
             - AUTHENTIK_ERROR_REPORTING__ENABLED=false
+            - AUTHENTIK_BOOTSTRAP_PASSWORD=${AUTHENTIK_BOOTSTRAP_PASSWORD}
+            - AUTHENTIK_BOOTSTRAP_EMAIL=${AUTHENTIK_BOOTSTRAP_EMAIL}
+            - AUTHENTIK_BOOTSTRAP_TOKEN=${AUTHENTIK_BOOTSTRAP_TOKEN}
         volumes:
             - media:/media
             - custom-templates:/templates
@@ -66,7 +68,6 @@ services:
             - AUTHENTIK_POSTGRESQL__USER=${POSTGRES_USER}
             - AUTHENTIK_POSTGRESQL__NAME=${POSTGRES_DB}
             - AUTHENTIK_POSTGRESQL__PASSWORD=${POSTGRES_PASSWORD}
-            - AUTHENTIK_ERROR_REPORTING__ENABLED=true
             - AUTHENTIK_DISABLE_STARTUP_ANALYTICS=true
             - AUTHENTIK_ERROR_REPORTING__ENABLED=false
         # `user: root` and the docker socket volume are optional.
