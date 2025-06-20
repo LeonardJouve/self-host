@@ -58,11 +58,11 @@ resource "authentik_provider_proxy" "loki_provider_proxy" {
     external_host      = var.loki_url
     mode               = "forward_single"
     property_mappings  = [
-        data.authentik_property_mapping_provider_scope.entitlements_mapping,
-        data.authentik_property_mapping_provider_scope.email_mapping,
-        data.authentik_property_mapping_provider_scope.openid_mapping,
-        data.authentik_property_mapping_provider_scope.profile_mapping,
-        data.authentik_property_mapping_provider_scope.ak_proxy_mapping,
+        data.authentik_property_mapping_provider_scope.entitlements_mapping.id,
+        data.authentik_property_mapping_provider_scope.email_mapping.id,
+        data.authentik_property_mapping_provider_scope.openid_mapping.id,
+        data.authentik_property_mapping_provider_scope.profile_mapping.id,
+        data.authentik_property_mapping_provider_scope.ak_proxy_mapping.id,
         authentik_property_mapping_provider_scope.loki_property_mapping.id,
     ]
     authorization_flow = data.authentik_flow.default-authorization-flow.id
