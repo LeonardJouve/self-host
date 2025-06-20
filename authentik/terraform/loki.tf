@@ -47,3 +47,10 @@ resource "authentik_application" "loki_application" {
     group             = "observability"
     protocol_provider = authentik_provider_proxy.loki_provider_proxy.id
 }
+
+resource "authentik_outpost" "loki_outpost" {
+    name = "loki_outpost"
+    protocol_providers = [
+        authentik_provider_proxy.loki_provider_proxy.id
+    ]
+}
