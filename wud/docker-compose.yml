@@ -3,6 +3,6 @@ services:
         image: getwud/wud
         container_name: wud
         volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
+            - ${XDG_RUNTIME_DIR}/podman/podman.sock:/var/run/docker.sock
         ports:
             - "${WUD_PORT}:3000"
