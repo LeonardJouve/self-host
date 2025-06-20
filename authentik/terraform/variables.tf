@@ -16,9 +16,6 @@ variable "grafana_url" {
 }
 
 variable "organizations" {
-    type    = map(object({
-        name      = string
-        usernames = list(string)
-    }))
-    default = []
+    type    = map(list(string))
+    default = {}
 }
