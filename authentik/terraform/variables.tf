@@ -3,7 +3,7 @@ variable "authentik_url" {
 }
 
 variable "authentik_token" {
-    type = string
+    type      = string
     sensitive = true
 }
 
@@ -14,9 +14,10 @@ variable "loki_url" {
 variable "grafana_url" {
     type = string
 }
+
 variable "organizations" {
-    type = map(object({
-        name  = string
+    type    = list(object({
+        name      = string
         usernames = list(string)
     }))
     default = {}
