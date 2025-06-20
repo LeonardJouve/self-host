@@ -1,23 +1,3 @@
-data "authentik_property_mapping_provider_scope" "entitlements_mapping" {
-    scope_name = "entitlements"
-}
-
-data "authentik_property_mapping_provider_scope" "email_mapping" {
-    scope_name = "email"
-}
-
-data "authentik_property_mapping_provider_scope" "openid_mapping" {
-    scope_name = "openid"
-}
-
-data "authentik_property_mapping_provider_scope" "profile_mapping" {
-    scope_name = "profile"
-}
-
-data "authentik_property_mapping_provider_scope" "ak_proxy_mapping" {
-    scope_name = "ak_proxy"
-}
-
 resource "authentik_group" "loki" {
     name = "loki"
 }
@@ -73,7 +53,7 @@ resource "authentik_application" "loki_application" {
     name              = "Loki"
     slug              = "loki"
     group             = "observability"
-    meta_icon         = "https://grafana.com/static/img/logos/logo-loki.svg"
+    meta_icon         = "https://grafana.com/media/docs/loki/logo-grafana-loki.png"
     protocol_provider = authentik_provider_proxy.loki_provider_proxy.id
 }
 

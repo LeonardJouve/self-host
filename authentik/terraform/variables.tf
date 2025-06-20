@@ -10,3 +10,7 @@ variable "authentik_token" {
 variable "loki_url" {
     type = string
 }
+
+variable "grafana_url" {
+    type = string
+}
