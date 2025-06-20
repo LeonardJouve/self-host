@@ -1,5 +1,5 @@
 resource "authentik_group" "loki" {
-    name = "loki"
+    name = "Loki"
 }
 
 resource "authentik_policy_binding" "loki_policy_binding" {
