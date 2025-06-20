@@ -10,7 +10,7 @@ resource "authentik_group" "groups" {
     name       = each.key
     users      = flatten([
         for username in each.value : [
-            for user in data.authentik_users.all.users : user.id if u.username == username
+            for user in data.authentik_users.all.users : user.id if user.username == username
         ]
     ])
     attributes = {
