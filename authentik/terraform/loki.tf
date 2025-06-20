@@ -1,21 +1,21 @@
 data "authentik_property_mapping_provider_scope" "entitlements_mapping" {
-    name = "entitlements"
+    scope_name = "entitlements"
 }
 
 data "authentik_property_mapping_provider_scope" "email_mapping" {
-    name = "email"
+    scope_name = "email"
 }
 
 data "authentik_property_mapping_provider_scope" "openid_mapping" {
-    name = "openid"
+    scope_name = "openid"
 }
 
 data "authentik_property_mapping_provider_scope" "profile_mapping" {
-    name = "profile"
+    scope_name = "profile"
 }
 
 data "authentik_property_mapping_provider_scope" "ak_proxy_mapping" {
-    name = "ak_proxy"
+    scope_name = "ak_proxy"
 }
 
 resource "authentik_group" "loki" {
