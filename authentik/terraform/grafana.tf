@@ -12,6 +12,12 @@ resource "authentik_group" "grafana_editors" {
     parent = authentik_group.grafana.id
 }
 
+resource "authentik_user" "grafana_user" {
+    username = "grafana"
+    name     = "Grafana"
+    groups   = [authentik_group.grafana.id]
+}
+
 resource "random_id" "grafana_client_id" {
     byte_length = 40
 }

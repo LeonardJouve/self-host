@@ -14,3 +14,10 @@ variable "loki_url" {
 variable "grafana_url" {
     type = string
 }
+variable "organizations" {
+    type = map(object({
+        name  = string
+        usernames = list(string)
+    }))
+    default = {}
+}
