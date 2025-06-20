@@ -39,6 +39,7 @@ resource "authentik_provider_proxy" "loki_provider_proxy" {
     mode               = "forward_single"
     property_mappings  = ["loki-org-id"]
     authorization_flow = data.authentik_flow.default-authorization-flow.id
+    invalidation_flow  = data.authentik_flow.default-invalidation-flow.id
 }
 
 resource "authentik_application" "loki_application" {
