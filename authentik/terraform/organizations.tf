@@ -13,7 +13,7 @@ resource "authentik_group" "groups" {
             for user in data.authentik_users.all.users : user.id if user.username == username
         ]
     ])
-    attributes = {
+    attributes = jsonencode({
         "organization-id": random_uuid.organization_ids[each.key].result
-    }
+    })
 }
