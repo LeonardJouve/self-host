@@ -16,7 +16,7 @@ variable "grafana_url" {
 }
 
 variable "organizations" {
-    type    = list(object({
+    type    = map(object({
         name      = string
         usernames = list(string)
     }))
