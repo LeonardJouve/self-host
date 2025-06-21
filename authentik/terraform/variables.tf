@@ -17,5 +17,5 @@ variable "grafana_url" {
 
 variable "organizations" {
     type    = set(string)
-    default = {}
+    default = []
 }
