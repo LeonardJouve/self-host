@@ -12,12 +12,6 @@ resource "authentik_group" "grafana_editors" {
     parent = authentik_group.grafana.id
 }
 
-resource "authentik_user" "grafana_user" {
-    username = "grafana"
-    name     = "Grafana"
-    type     = "service_account"
-}
-
 resource "random_id" "grafana_client_id" {
     byte_length = 40
 }
@@ -50,4 +44,17 @@ resource "authentik_application" "grafana_application" {
     group             = "observability"
     meta_icon         = "https://grafana.com/media/docs/grafana-cloud/infrastructure/grafanalogo.svg"
     protocol_provider = authentik_provider_oauth2.grafana_oauth2_provider.id
+}
+
+resource "authentik_user" "grafana_user" {
+    username = "grafana"
+    name     = "Grafana"
+    type     = "service_account"
+}
+
+resource "authentik_token" "grafana_token" {
+    identifier = "grafana_token"
+    user       = authentik_user.grafana_user.id
+    expires    = timeadd(timestamp(), "${365 * 24}h")
+    intent     = "app_password"
 }
