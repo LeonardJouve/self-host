@@ -10,7 +10,6 @@ resource "authentik_user" "grafana_user" {
     username   = "grafana"
     name       = "Grafana"
     type       = "service_account"
-    groups     = [authentik_group.loki.id]
     attributes = jsonencode({
         "goauthentik.io/user/token-expires"          = true
         "goauthentik.io/user/token-maximum-lifetime" = "days=365"
@@ -34,7 +33,6 @@ resource "authentik_user" "alloy_user" {
     username   = "alloy"
     name       = "Alloy"
     type       = "service_account"
-    groups     = [authentik_group.loki.id]
     attributes = jsonencode({
         "goauthentik.io/user/token-expires"          = true
         "goauthentik.io/user/token-maximum-lifetime" = "days=365"
