@@ -19,3 +19,8 @@ variable "organizations" {
     type    = set(string)
     default = []
 }
+
+variable "users" {
+    type    = set(string)
+    default = []
+}
