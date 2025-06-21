@@ -1,6 +1,3 @@
-data "authentik_users" "all" {
-}
-
 resource "random_uuid" "organization_ids" {
     for_each = var.organizations
 }
