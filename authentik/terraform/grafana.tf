@@ -58,8 +58,14 @@ resource "authentik_user" "grafana_user" {
 }
 
 resource "authentik_token" "grafana_token" {
-    identifier = "grafana_token"
-    user       = authentik_user.grafana_user.id
-    expires    = timeadd(timestamp(), "${365 * 24}h")
-    intent     = "app_password"
+    identifier   = "grafana_token"
+    user         = authentik_user.grafana_user.id
+    expires      = timeadd(timestamp(), "${365 * 24}h")
+    intent       = "app_password"
+    retrieve_key = true
+}
+
+output "grafana_token" {
+    value     = authentik_token.grafana_token.key
+    sensitive = true
 }
