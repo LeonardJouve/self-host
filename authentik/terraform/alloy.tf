@@ -1,7 +1,12 @@
 resource "authentik_user" "alloy_user" {
-    username = "alloy"
-    name     = "Alloy"
-    type     = "service_account"
+    username   = "alloy"
+    name       = "Alloy"
+    type       = "service_account"
+    groups     = [authentik_group.loki.id]
+    attributes = jsonencode({
+        "goauthentik.io/user/token-expires"          = true
+        "goauthentik.io/user/token-maximum-lifetime" = "days=365"
+    })
 }
 
 resource "authentik_token" "alloy_token" {
