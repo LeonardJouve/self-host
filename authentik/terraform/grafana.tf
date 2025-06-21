@@ -15,7 +15,7 @@ resource "authentik_group" "grafana_editors" {
 resource "authentik_user" "grafana_user" {
     username = "grafana"
     name     = "Grafana"
-    groups   = [authentik_group.grafana.id]
+    type     = "service_account"
 }
 
 resource "random_id" "grafana_client_id" {

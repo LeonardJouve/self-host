@@ -16,6 +16,6 @@ variable "grafana_url" {
 }
 
 variable "organizations" {
-    type    = map(list(string))
+    type    = set(string)
     default = {}
 }
