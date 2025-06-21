@@ -56,10 +56,3 @@ resource "authentik_application" "loki_application" {
     meta_icon         = "https://grafana.com/media/docs/loki/logo-grafana-loki.png"
     protocol_provider = authentik_provider_proxy.loki_provider_proxy.id
 }
-
-resource "authentik_outpost" "loki_outpost" {
-    name = "loki_outpost"
-    protocol_providers = [
-        authentik_provider_proxy.loki_provider_proxy.id
-    ]
-}
