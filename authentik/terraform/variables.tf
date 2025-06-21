@@ -21,6 +21,8 @@ variable "organizations" {
 }
 
 variable "users" {
-    type    = set(string)
-    default = []
+    type    = map(object({
+        email = string
+    }))
+    default = {}
 }
