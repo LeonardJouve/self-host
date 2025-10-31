@@ -1,0 +1,19 @@
+services:
+    gwent:
+        image: ghcr.io/leonardjouve/gwent:latest
+        container_name: gwent
+        restart: unless-stopped
+        ports:
+            - "4567:3000"
+
+    watchtower:
+        image: containrrr/watchtower
+        container_name: watchtower
+        restart: unless-stopped
+        volumes:
+            - ${XDG_RUNTIME_DIR}/podman/podman.sock:/var/run/docker.sock
+        environment:
+            - WATCHTOWER_CLEANUP=true
+            - WATCHTOWER_POLL_INTERVAL=300
+        command:
+            gwent
