@@ -15,4 +15,4 @@ services:
             - WATCHTOWER_CLEANUP=true
             - WATCHTOWER_POLL_INTERVAL=300
         command:
-            gwent
+            --disable-memory-swappiness gwent
