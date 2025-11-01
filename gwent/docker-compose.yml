@@ -5,3 +5,14 @@ services:
         restart: unless-stopped
         ports:
             - "4567:3000"
+    watchtower:
+        image: ghcr.io/nicholas-fedor/watchtower:latest-dev
+        container_name: watchtower
+        restart: unless-stopped
+        volumes:
+            - ${XDG_RUNTIME_DIR}/podman/podman.sock:/var/run/docker.sock
+        environment:
+            - WATCHTOWER_CLEANUP=true
+            - WATCHTOWER_POLL_INTERVAL=300
+        command:
+            gwent
