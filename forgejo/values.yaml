@@ -1,0 +1,53 @@
+replicaCount: 1
+
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+    - host: git.famillejouve.ch
+      paths:
+        - path: /
+          pathType: Prefix
+          port: http
+
+gitea:
+  admin:
+    username: gitea_admin
+    password: 'password'
+
+  config:
+    APP_NAME: 'Forgejo'
+
+    security:
+      LOGIN_REMEMBER_DAYS: 365
+
+    service:
+      DISABLE_REGISTRATION: true
+      REQUIRE_SIGNIN_VIEW: true
+
+    server:
+      ROOT_URL: https://git.famillejouve.ch/
+
+    cache:
+      ADAPTER: 'twoqueue'
+      HOST: '{"size":100,"recent_ratio":0.25,"ghost_ratio":0.5}'
+
+    storage:
+      STORAGE_TYPE: minio
+      MINIO_ENDPOINT: s3.cubbit.eu
+      MINIO_USE_SSL: true
+      MINIO_BUCKET: forgejo
+      MINIO_LOCATION: eu-west-1
+
+  additionalConfigFromEnvs:
+    - name: FORGEJO__STORAGE__MINIO_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: forgejo-s3
+          key: access-key
+
+    - name: FORGEJO__STORAGE__MINIO_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: forgejo-s3
+          key: secret-key
