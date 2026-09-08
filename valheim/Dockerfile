@@ -26,17 +26,7 @@ RUN apt-get update \
 COPY --from=build --chown=steam /home/steam/valheim-dedicated /opt/valheim
 RUN mkdir -p /home/steam/.steam/sdk64 \
     && ln -s /opt/valheim/linux64/steamclient.so /home/steam/.steam/sdk64/steamclient.so
-RUN <<'EOF' cat > /entrypoint.sh
-#!/bin/bash
-exec /opt/valheim/valheim_server.x86_64 \
-    -nographics -batchmode \
-    -name "${SERVER_NAME}" \
-    -password "${SERVER_PASSWORD}" \
-    -world "${WORLD}" \
-    -port "${PORT}" \
-    -public "${PUBLIC}" \
-    -savedir /data
-EOF
+COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 ENV SERVER_NAME="Valheim Docker Server" \
     WORLD="Dedicated" \
