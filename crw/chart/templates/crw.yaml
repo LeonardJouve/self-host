@@ -1,0 +1,118 @@
+{{- /*
+Hardening mirrors upstream docker-compose.yml lines 51-65: read_only rootfs,
+cap_drop ALL, no-new-privileges, /tmp as the only writable scratch, 2g ceiling.
+(compose's pids_limit: 512 has no pod-spec equivalent — dropped.)
+
+Runs as root: the upstream Dockerfile has no USER instruction, so
+runAsNonRoot is deliberately absent — setting it would fail admission.
+
+Probes use /health, not /ready. /ready probes every CDP renderer via
+Browser.getVersion and 503s if one is down; wired as a readinessProbe it would
+pull crw out of the Ingress every time lightpanda restarts, while plain-HTTP
+scraping kept working. Upstream itself says /ready is for ~5min off-host
+monitoring, not a hot gate. Hit it by hand.
+*/ -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crw
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: crw
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: crw
+  template:
+    metadata:
+      labels:
+        app: crw
+      annotations:
+        # Roll the pod when the rendered TOML changes. Without this, editing
+        # config.* in values.yaml updates the ConfigMap and nothing happens.
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        # Same for the API key. crw reads it from the CRW_AUTH__API_KEYS env var,
+        # and the secretKeyRef spec itself does not change when the key does --
+        # so without this a key rotation updates the Secret and the running pod
+        # keeps enforcing the old one until something else restarts it.
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: crw
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: CRW_CONFIG
+              value: config.k8s
+            - name: RUST_LOG
+              value: info
+            # optional: true = the pod boots unauthenticated when auth.apiKeys
+            # is empty and no Secret exists.
+            - name: CRW_AUTH__API_KEYS
+              valueFrom:
+                secretKeyRef:
+                  name: crw-auth
+                  key: apiKeys
+                  optional: true
+          volumeMounts:
+            - name: config
+              mountPath: /app/config.k8s.toml
+              subPath: config.k8s.toml
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+          startupProbe:
+            httpGet: {path: /health, port: http}
+            periodSeconds: 2
+            failureThreshold: 30
+          livenessProbe:
+            httpGet: {path: /health, port: http}
+            periodSeconds: 30
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet: {path: /health, port: http}
+            periodSeconds: 10
+            timeoutSeconds: 3
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+            seccompProfile:
+              type: RuntimeDefault
+      volumes:
+        - name: config
+          configMap:
+            name: crw-config
+        - name: tmp
+          emptyDir:
+            sizeLimit: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crw
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: crw
+spec:
+  selector:
+    app: crw
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http

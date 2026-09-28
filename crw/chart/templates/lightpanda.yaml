@@ -1,0 +1,99 @@
+{{- if .Values.lightpanda.enabled }}
+{{- /*
+LightPanda — Zig browser, CDP on 9222. Not a Chromium fork: V8 + html5ever +
+DOM APIs, no compositor.
+
+The --block-* flags are the SSRF guard: the browser itself refuses private and
+internal destinations on the resolved socket address. crw also validates every
+intercepted CDP request, but that cannot see websockets or worker targets, and
+it resolves them in a different pod than the browser dials from.
+
+No cap_drop here on purpose: upstream compose hardens only crw and searxng.
+*/ -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.lightpanda.serviceName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: lightpanda
+spec:
+  replicas: {{ .Values.lightpanda.replicaCount }}
+  selector:
+    matchLabels:
+      app: lightpanda
+  template:
+    metadata:
+      labels:
+        app: lightpanda
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: lightpanda
+          image: {{ .Values.lightpanda.image }}
+          # Overrides the image CMD, so the whole serve line is repeated.
+          command: ["/bin/lightpanda"]
+          args:
+            - serve
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "9222"
+            - --log-level
+            - info
+            {{- if .Values.lightpanda.advertiseHost }}
+            - --advertise-host
+            - {{ .Values.lightpanda.advertiseHost | quote }}
+            {{- end }}
+            {{- if .Values.lightpanda.blockPrivateNetworks }}
+            - --block-private-networks
+            {{- with .Values.lightpanda.blockCidrs }}
+            - --block-cidrs
+            - {{ . | quote }}
+            {{- end }}
+            {{- end }}
+          env:
+            - name: LIGHTPANDA_DISABLE_TELEMETRY
+              value: {{ .Values.lightpanda.disableTelemetry | quote }}
+          ports:
+            - name: cdp
+              containerPort: 9222
+          startupProbe:
+            tcpSocket: {port: cdp}
+            periodSeconds: 2
+            failureThreshold: 30
+          livenessProbe:
+            tcpSocket: {port: cdp}
+            periodSeconds: 30
+          readinessProbe:
+            tcpSocket: {port: cdp}
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.lightpanda.resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.lightpanda.serviceName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: lightpanda
+spec:
+  selector:
+    app: lightpanda
+  ports:
+    - name: cdp
+      port: 9222
+      targetPort: cdp
+{{- end }}

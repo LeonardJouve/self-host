@@ -1,0 +1,65 @@
+{{- /*
+Single source of truth for crw's TOML config. Rendered inline rather than
+shipped as a static file so the [renderer.chrome] block appears only when
+chrome.enabled — otherwise enabling the tier would mean editing two places.
+
+Load order (crates/crw-core/src/config.rs AppConfig::load):
+  built-in defaults -> $CRW_CONFIG file -> ~/.config/crw/config.toml
+  -> bundled config.default.toml. Env vars (CRW_*) beat every file.
+
+Names are static, not release-prefixed: ws_url below is a DNS name that must
+match the Service objects. A second release in the same namespace would
+collide — this chart is one-instance-per-namespace by design.
+*/ -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crw-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: crw
+data:
+  config.k8s.toml: |
+    [server]
+    host = "0.0.0.0"
+    port = 3000
+    rate_limit_rps = {{ .Values.config.rateLimitRps }}
+
+    [renderer]
+    mode = "{{ .Values.config.rendererMode }}"
+    page_timeout_ms = {{ .Values.config.pageTimeoutMs }}
+    pool_size = {{ .Values.config.poolSize }}
+    {{- if .Values.chrome.enabled }}
+    chrome_intercept_resources = true
+    {{- end }}
+
+    [renderer.lightpanda]
+    ws_url = "ws://{{ .Values.lightpanda.serviceName }}:9222/"
+    {{- if .Values.chrome.enabled }}
+
+    [renderer.chrome]
+    ws_url = "ws://{{ .Values.chrome.serviceName }}:9222/"
+
+    [renderer.chrome_pool]
+    size = {{ .Values.chrome.poolSize }}
+    reserved_interactive_renders = {{ .Values.chrome.reservedInteractiveRenders }}
+    {{- end }}
+
+    [search]
+    enabled = {{ .Values.config.searchEnabled }}
+    searxng_url = "{{ .Values.config.searxngUrl }}"
+    timeout_ms = 15000
+
+    [map.url_filter]
+    strip_tracking_params = true
+    drop_action_urls = true
+
+    [document]
+    # /v2/parse — PDF & doc parsing. sandbox = true forks each parse into a
+    # child with its own RLIMIT_AS, so
+    # peak ~= base + max_concurrent_parses * sandbox_memory_bytes.
+    enabled = true
+    sandbox = true
+    sandbox_memory_bytes = {{ .Values.config.document.sandboxMemoryBytes }}
+    max_concurrent_parses = {{ .Values.config.document.maxConcurrentParses }}
+    max_upload_bytes = {{ .Values.config.document.maxUploadBytes }}

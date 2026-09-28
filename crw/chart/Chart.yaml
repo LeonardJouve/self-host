@@ -1,0 +1,6 @@
+apiVersion: v2
+name: crw
+description: CRW web scraper / crawler API — one static Rust binary, plus optional CDP renderer tiers
+type: application
+version: 0.1.0
+appVersion: "0.36.0"

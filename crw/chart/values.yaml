@@ -1,0 +1,73 @@
+# crw — the whole product in one static Rust binary.
+
+image:
+  repository: ghcr.io/leonardjouve/crw
+  tag: "0.36.0"
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+resources:
+  requests:
+    memory: 64Mi
+    cpu: 100m
+  limits:
+    memory: 2Gi
+    cpu: "2"
+
+ingress:
+  enabled: true
+  className: traefik
+  host: crw.famillejouve.ch
+  tls: []
+  annotations: {}
+
+# Empty = API is unauthenticated
+auth:
+  apiKeys: []
+
+config:
+  rateLimitRps: 10
+  rendererMode: auto
+  poolSize: 4
+  pageTimeoutMs: 30000
+  searchEnabled: true
+  searxngUrl: http://searxng-http.searxng.svc.cluster.local:8080
+  document:
+    sandboxMemoryBytes: 536870912
+    maxConcurrentParses: 2
+    maxUploadBytes: 52428800
+
+lightpanda:
+  enabled: true
+  serviceName: lightpanda
+  image: lightpanda/browser@sha256:427a7167e4f80b3595a5b794f9feb394a7c280ebea25ca2e7d62f0b677b7bd48
+  advertiseHost: lightpanda
+  # SSRF guard
+  blockPrivateNetworks: true
+  blockCidrs: 0.0.0.0/8,10.0.0.0/8,127.0.0.0/8,169.254.0.0/16,172.16.0.0/12,192.168.0.0/16,100.64.0.0/10,224.0.0.0/4,240.0.0.0/4,192.0.0.0/24,192.0.2.0/24,198.18.0.0/15,198.51.100.0/24,203.0.113.0/24,fc00::/7,fe80::/10,fec0::/10,ff00::/8,::/96,64:ff9b:1::/48,2002::/16
+  disableTelemetry: true
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 128Mi
+      cpu: 100m
+    limits:
+      memory: 1Gi
+      cpu: "1"
+
+chrome:
+  enabled: false
+  serviceName: chrome
+  image: chromedp/headless-shell:latest
+  poolSize: 8
+  reservedInteractiveRenders: 3
+  replicaCount: 1
+  shmSize: 2Gi
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 2Gi
+      cpu: "2"

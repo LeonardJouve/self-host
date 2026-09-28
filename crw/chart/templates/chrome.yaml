@@ -1,0 +1,84 @@
+{{- if .Values.chrome.enabled }}
+{{- /*
+Chrome tier — real Blink + V8, for the complex SPAs LightPanda crashes on
+(Next.js App Router hydration, modern React 18+). Enabling this also renders
+the [renderer.chrome] block in configmap.yaml, so the auto ladder picks it up
+with no other change.
+
+No cap_drop, no readOnlyRootFilesystem: compose hardens only crw and searxng,
+and Chromium's own sandbox wants what it wants.
+*/ -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.chrome.serviceName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: chrome
+spec:
+  replicas: {{ .Values.chrome.replicaCount }}
+  selector:
+    matchLabels:
+      app: chrome
+  template:
+    metadata:
+      labels:
+        app: chrome
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: chrome
+          image: {{ .Values.chrome.image }}
+          args:
+            # Let Chrome accept CDP where the Host header is the k8s Service
+            # name instead of localhost.
+            - --remote-allow-origins=*
+            # Render sites with expired/invalid certs instead of failing nav.
+            - --ignore-certificate-errors
+            # Dodge ERR_HTTP2_PROTOCOL_ERROR on hosts that hard-fail Chrome's
+            # JA4 fingerprint; forces HTTP/1.1 which most anti-bot still allows.
+            - --disable-http2
+            - --disable-blink-features=AutomationControlled
+          ports:
+            - name: cdp
+              containerPort: 9222
+          startupProbe:
+            tcpSocket: {port: cdp}
+            periodSeconds: 2
+            failureThreshold: 30
+          livenessProbe:
+            tcpSocket: {port: cdp}
+            periodSeconds: 30
+          resources:
+            {{- toYaml .Values.chrome.resources | nindent 12 }}
+          volumeMounts:
+            - name: shm
+              mountPath: /dev/shm
+      volumes:
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: {{ .Values.chrome.shmSize }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.chrome.serviceName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: chrome
+spec:
+  selector:
+    app: chrome
+  ports:
+    - name: cdp
+      port: 9222
+      targetPort: cdp
+{{- end }}
