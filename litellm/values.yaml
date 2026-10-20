@@ -1,0 +1,79 @@
+image:
+  tag: "1.106.0"
+  pullPolicy: IfNotPresent
+
+nodeSelector:
+  kubernetes.io/hostname: asrock-desktop
+
+resources:
+  requests:
+    memory: 1Gi
+    cpu: 250m
+  limits:
+    memory: 1Gi
+    cpu: "1"
+
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+    - host: ai.famillejouve.ch
+      paths:
+        - path: /
+          pathType: Prefix
+
+masterkeySecretName: litellm-master-key
+masterkeySecretKey: master-key
+
+# LITELLM_SALT_KEY encrypts credentials stored in the DB: never change it
+environmentSecrets:
+  - litellm-salt-key
+
+db:
+  deployStandalone: false
+  useExisting: true
+  endpoint: postgres
+  database: litellm
+  secret:
+    name: litellm-postgres
+    usernameKey: username
+    passwordKey: password
+
+# ChatGPT subscription login (chatgpt/* models), refreshed in place by the proxy
+envVars:
+  CHATGPT_TOKEN_DIR: /data/chatgpt
+
+volumes:
+  - name: chatgpt-auth
+    persistentVolumeClaim:
+      claimName: litellm-chatgpt-auth
+
+volumeMounts:
+  - name: chatgpt-auth
+    mountPath: /data/chatgpt
+
+extraResources:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: litellm-chatgpt-auth
+      namespace: litellm
+      annotations:
+        helm.sh/resource-policy: keep
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: longhorn
+      resources:
+        requests:
+          storage: 100Mi
+
+# Single replica: let the proxy apply the schema on startup instead
+migrationJob:
+  enabled: false
+
+proxy_config:
+  # Models are managed from the UI and stored in Postgres
+  model_list: []
+  general_settings:
+    master_key: os.environ/PROXY_MASTER_KEY
+    store_model_in_db: true
