@@ -18,7 +18,7 @@ resources:
 ingress:
   enabled: true
   className: traefik
-  host: crw.famillejouve.ch
+  host: crw.jouve.ch
   tls: []
   annotations: {}
 
@@ -32,7 +32,7 @@ config:
   poolSize: 4
   pageTimeoutMs: 30000
   searchEnabled: true
-  searxngUrl: http://searxng-http.searxng.svc.cluster.local:8080
+  searxngUrl: https://search.jouve.ch
   document:
     sandboxMemoryBytes: 536870912
     maxConcurrentParses: 2

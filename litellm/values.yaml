@@ -17,7 +17,7 @@ ingress:
   enabled: true
   className: traefik
   hosts:
-    - host: ai.famillejouve.ch
+    - host: ai.jouve.ch
       paths:
         - path: /
           pathType: Prefix

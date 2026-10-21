@@ -66,18 +66,18 @@ helm upgrade litellm -n litellm -f values.yaml oci://ghcr.io/berriai/litellm-hel
 
 # Connection
 
-UI: https://ai.famillejouve.ch/ui
+UI: https://ai.jouve.ch/ui
 
 ## Codex
 
 ~/.codex/config.toml
 ```yaml
-model = "chatgpt/gpt-6-luna"
+model = "chatgpt/gpt-6.1-sol"
 model_provider = "litellm"
 
 [model_providers.litellm]
 name = "LiteLLM"
-base_url = "https://ai.famillejouve.ch/v1"
+base_url = "https://ai.jouve.ch/v1"
 experimental_bearer_token = "sk-..."
 wire_api = "responses"
 ```
@@ -85,7 +85,7 @@ wire_api = "responses"
 ## Claude Code
 
 ```bash
-export ANTHROPIC_BASE_URL="https://ai.famillejouve.ch"
+export ANTHROPIC_BASE_URL="https://ai.jouve.ch"
 export ANTHROPIC_CUSTOM_HEADERS="x-litellm-api-key: Bearer sk-..."
 ```
 
@@ -101,7 +101,7 @@ export LITELLM_KEY="sk-..."
   "$schema": "https://pi.dev/schemas/models.schema.json",
   "providers": {
     "litellm": {
-      "baseUrl": "https://ai.famillejouve/v1",
+      "baseUrl": "https://ai.jouve.ch/v1",
       "api": "openai-completions",
       "apiKey": "$LITELLM_KEY",
       "models": [
