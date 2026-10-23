@@ -70,16 +70,33 @@ UI: https://ai.jouve.ch/ui
 
 ## Codex
 
+```bash
+export LITELLM_KEY="sk-..."
+```
+
 ~/.codex/config.toml
 ```yaml
 model = "chatgpt/gpt-6.1-sol"
 model_provider = "litellm"
 
+[features]
+api_key_model_discovery = true
+suppress_unstable_features_warning = true
+
+
 [model_providers.litellm]
 name = "LiteLLM"
 base_url = "https://ai.jouve.ch/v1"
-experimental_bearer_token = "sk-..."
+env_key = "LITELLM_KEY"
 wire_api = "responses"
+model_catalog_url = "https://ai.jouve.ch/v1/models"
+```
+
+You might have to set the following config in the NPM proxy config
+```
+proxy_buffer_size 32k;
+proxy_buffers 8 32k;
+proxy_busy_buffers_size 64k;
 ```
 
 ## Claude Code
