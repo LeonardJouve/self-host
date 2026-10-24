@@ -32,7 +32,7 @@ config:
   poolSize: 4
   pageTimeoutMs: 30000
   searchEnabled: true
-  searxngUrl: https://search.jouve.ch
+  searxngUrl: http://searxng-http.searxng.svc.cluster.local:8080
   document:
     sandboxMemoryBytes: 536870912
     maxConcurrentParses: 2

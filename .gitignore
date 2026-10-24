@@ -2,3 +2,5 @@
 .terraform*
 *.tfvars*
 *.tfstate*
+mutagen.*
+valheim/backup
