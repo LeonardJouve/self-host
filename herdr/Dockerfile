@@ -4,7 +4,7 @@ FROM tailscale/tailscale:${TAILSCALE_VERSION} AS tailscale
 FROM node:24-trixie-slim
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends bash bash-completion ca-certificates curl git less openssh-client procps ripgrep tini \
+ && apt-get install -y --no-install-recommends bash bash-completion ca-certificates curl git less nano openssh-client procps ripgrep tini \
  && rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g "@anthropic-ai/claude-code" "@openai/codex" "@earendil-works/pi-coding-agent" \
