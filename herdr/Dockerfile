@@ -1,0 +1,22 @@
+ARG TAILSCALE_VERSION=v1.104.2
+FROM tailscale/tailscale:${TAILSCALE_VERSION} AS tailscale
+
+FROM node:24-trixie-slim
+
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends bash bash-completion ca-certificates curl git less openssh-client procps ripgrep tini \
+ && rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g "@anthropic-ai/claude-code" "@openai/codex" "@earendil-works/pi-coding-agent" \
+ && npm cache clean --force
+
+COPY --from=tailscale /usr/local/bin/tailscaled /usr/local/bin/tailscale /usr/local/bin/
+RUN curl -fsSL https://herdr.dev/install.sh | HERDR_INSTALL_DIR=/usr/local/bin sh
+
+
+ENV SHELL=/bin/bash
+
+COPY profile.sh /etc/profile.d/herdr.sh
+COPY --chmod=755 entrypoint.sh /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/bin/tini", "-g", "--", "/usr/local/bin/entrypoint.sh"]

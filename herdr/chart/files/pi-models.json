@@ -1,0 +1,25 @@
+{
+  "$schema": "https://pi.dev/schemas/models.schema.json",
+  "providers": {
+    "litellm": {
+      "baseUrl": "https://ai.jouve.ch/v1",
+      "api": "openai-completions",
+      "apiKey": "$LITELLM_KEY",
+      "models": [
+        { "id": "qwen/qwen3.8-max", "reasoning": true, "input": ["text", "image"], "contextWindow": 1000000, "maxTokens": 131072 },
+        { "id": "qwen/qwen3.8-flash", "reasoning": true, "input": ["text", "image"], "contextWindow": 1000000, "maxTokens": 131072 },
+        { "id": "qwen/glm-5.3", "reasoning": true, "input": ["text"], "contextWindow": 1000000, "maxTokens": 131072 },
+        { "id": "qwen/deepseek-v4-pro", "reasoning": true, "input": ["text"], "contextWindow": 1000000, "maxTokens": 384000 },
+        { "id": "qwen/deepseek-v4-flash", "reasoning": true, "input": ["text"], "contextWindow": 1000000, "maxTokens": 384000 },
+        { "id": "qwen/deepseek-v4.1-flash", "reasoning": true, "input": ["text", "image"], "contextWindow": 1000000, "maxTokens": 384000 },
+        { "id": "chatgpt/gpt-6.1-sol", "api": "openai-responses", "reasoning": true, "input": ["text", "image"], "contextWindow": 922000, "maxTokens": 128000 },
+        { "id": "chatgpt/gpt-6-sol", "api": "openai-responses", "reasoning": true, "input": ["text", "image"], "contextWindow": 922000, "maxTokens": 128000 },
+        { "id": "chatgpt/gpt-6-luna", "api": "openai-responses", "reasoning": true, "input": ["text", "image"], "contextWindow": 922000, "maxTokens": 128000 },
+        { "id": "chatgpt/gpt-6-astra", "api": "openai-responses", "reasoning": true, "input": ["text", "image"], "contextWindow": 922000, "maxTokens": 128000 },
+        { "id": "chatgpt/gpt-5.6-sol", "api": "openai-responses", "reasoning": true, "input": ["text", "image"], "contextWindow": 1050000, "maxTokens": 128000 },
+        { "id": "chatgpt/gpt-5.6-luna", "api": "openai-responses", "reasoning": true, "input": ["text", "image"], "contextWindow": 1050000, "maxTokens": 128000 },
+        { "id": "chatgpt/gpt-5.6-terra", "api": "openai-responses", "reasoning": true, "input": ["text", "image"], "contextWindow": 1050000, "maxTokens": 128000 }
+      ]
+    }
+  }
+}

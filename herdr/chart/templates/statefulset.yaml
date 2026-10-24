@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: herdr
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  serviceName: herdr
+  selector:
+    matchLabels:
+      app: herdr
+  template:
+    metadata:
+      labels:
+        app: herdr
+      annotations:
+        checksum/agents: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: herdr
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: Always
+          env:
+            - name: TS_LOGIN_SERVER
+              value: {{ .Values.tailscale.loginServer | quote }}
+            - name: TS_HOSTNAME
+              value: {{ .Values.tailscale.hostname | quote }}
+          volumeMounts:
+            - name: data
+              mountPath: /root
+              subPath: home
+            - name: data
+              mountPath: /var/lib/tailscale
+              subPath: tailscale
+            - name: tailscale-authkey
+              mountPath: /run/secrets/tailscale
+              readOnly: true
+            - name: agents
+              mountPath: /etc/codex/config.toml
+              subPath: codex-config.toml
+              readOnly: true
+            - name: agents
+              mountPath: /root/.pi/agent/models.json
+              subPath: pi-models.json
+              readOnly: true
+            - name: env
+              mountPath: /run/secrets/herdr-env
+              readOnly: true
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+      volumes:
+        - name: agents
+          configMap:
+            name: herdr-agents
+        - name: tailscale-authkey
+          secret:
+            secretName: herdr-tailscale
+            defaultMode: 0400
+        - name: env
+          secret:
+            secretName: herdr-env
+            defaultMode: 0444
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources:
+          requests:
+            storage: {{ .Values.storage.size }}

@@ -1,0 +1,18 @@
+image:
+  repository: ghcr.io/leonardjouve/herdr
+  tag: "latest"
+
+tailscale:
+  loginServer: https://headscale.jouve.ch
+  hostname: herdr
+
+storage:
+  size: 20Gi
+
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 250m
+  limits:
+    memory: 4Gi
+    cpu: "4"

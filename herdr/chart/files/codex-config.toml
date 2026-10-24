@@ -1,0 +1,13 @@
+model = "chatgpt/gpt-6.1-sol"
+model_provider = "litellm"
+
+[features]
+api_key_model_discovery = true
+suppress_unstable_features_warning = true
+
+[model_providers.litellm]
+name = "LiteLLM"
+base_url = "https://ai.jouve.ch/v1"
+env_key = "LITELLM_KEY"
+wire_api = "responses"
+model_catalog_url = "https://ai.jouve.ch/v1/models"

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: herdr-agents
+  namespace: {{ .Release.Namespace }}
+data:
+  codex-config.toml: |
+    {{- .Files.Get "files/codex-config.toml" | nindent 4 }}
+  pi-models.json: |
+    {{- .Files.Get "files/pi-models.json" | nindent 4 }}
