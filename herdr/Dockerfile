@@ -7,6 +7,9 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends bash bash-completion ca-certificates curl git less nano openssh-client procps ripgrep tini wget \
  && rm -rf /var/lib/apt/lists/*
 
+ARG GO_VERSION=1.27.3
+RUN curl -fsSL "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" | tar -C /usr/local -xz
+
 RUN npm install -g "@anthropic-ai/claude-code" "@openai/codex" "@earendil-works/pi-coding-agent" \
  && npm cache clean --force
 

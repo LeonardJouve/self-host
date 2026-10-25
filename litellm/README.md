@@ -77,6 +77,7 @@ export LITELLM_KEY="sk-..."
 ~/.codex/config.toml
 ```yaml
 model = "chatgpt/gpt-6.1-sol"
+model_reasoning_effort ="medium"
 model_provider = "litellm"
 
 [features]
