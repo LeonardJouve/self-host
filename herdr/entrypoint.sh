@@ -4,10 +4,6 @@ set -euo pipefail
 
 cp --update=none /etc/skel/.bashrc /etc/skel/.profile /root/
 
-for line in 'export PATH=$PATH:/usr/local/go/bin' 'export PATH="$PATH:$(go env GOPATH)/bin"'; do
-  grep -qxF "$line" /root/.bashrc || echo "$line" >> /root/.bashrc
-done
-
 for agent in pi claude codex; do
   herdr integration install "$agent" || echo "herdr integration $agent failed" >&2
 done

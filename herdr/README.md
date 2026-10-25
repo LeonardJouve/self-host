@@ -44,7 +44,11 @@ kubectl -n herdr create secret generic herdr-env \
 ## Install
 
 ```bash
-helm upgrade --install herdr ./chart --namespace herdr
+helm upgrade --install herdr ./chart -n herdr --set image.tag="latest@$(docker image inspect ghcr.io/leonardjouve/herdr:latest --format '{{index .RepoDigests 0}}' | cut -d@ -f2)"
+```
+or
+```bash
+for /f "tokens=2 delims=@" %d in ('docker image inspect ghcr.io/leonardjouve/herdr:latest --format "{{index .RepoDigests 0}}"') do helm upgrade --install herdr ./chart -n herdr --set image.tag=latest@%d
 ```
 
 Check that the node registered:
