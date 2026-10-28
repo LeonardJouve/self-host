@@ -46,8 +46,13 @@ kubectl -n herdr create secret generic herdr-env \
 ```bash
 helm upgrade --install herdr ./chart -n herdr --set image.tag="latest@$(docker image inspect ghcr.io/leonardjouve/herdr:latest --format '{{index .RepoDigests 0}}' | cut -d@ -f2)"
 ```
-or
-```bash
+PowerShell:
+```powershell
+$digest = (docker image inspect ghcr.io/leonardjouve/herdr:latest --format "{{index .RepoDigests 0}}").Split('@')[1]
+helm upgrade --install herdr ./chart -n herdr --set image.tag="latest@$digest"
+```
+cmd.exe:
+```bat
 for /f "tokens=2 delims=@" %d in ('docker image inspect ghcr.io/leonardjouve/herdr:latest --format "{{index .RepoDigests 0}}"') do helm upgrade --install herdr ./chart -n herdr --set image.tag=latest@%d
 ```
 
