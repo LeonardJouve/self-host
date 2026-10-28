@@ -28,4 +28,4 @@ helm upgrade forgejo -n forgejo -f values.yaml oci://code.forgejo.org/forgejo-he
 
 User: `gitea_admin`
 
-Password: `password`
+Password: `password` (only set on first install, change it after the first login — it is not reset on upgrade)

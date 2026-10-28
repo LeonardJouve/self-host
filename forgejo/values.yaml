@@ -4,7 +4,7 @@ ingress:
   enabled: true
   className: traefik
   hosts:
-    - host: git.famillejouve.ch
+    - host: git.jouve.ch
       paths:
         - path: /
           pathType: Prefix
@@ -14,6 +14,7 @@ gitea:
   admin:
     username: gitea_admin
     password: 'password'
+    passwordMode: initialOnlyNoReset
 
   config:
     APP_NAME: 'Forgejo'
@@ -26,7 +27,7 @@ gitea:
       REQUIRE_SIGNIN_VIEW: true
 
     server:
-      ROOT_URL: https://git.famillejouve.ch/
+      ROOT_URL: https://git.jouve.ch/
 
     cache:
       ADAPTER: 'twoqueue'
