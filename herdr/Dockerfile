@@ -4,7 +4,7 @@ FROM tailscale/tailscale:${TAILSCALE_VERSION} AS tailscale
 FROM node:24-trixie-slim
 
 RUN apt-get update \
- && apt-get install -y --no-install-recommends bash bash-completion ca-certificates curl git less nano procps ripgrep tini wget libicu76 gcc g++ libc6-dev make \
+ && apt-get install -y --no-install-recommends bash bash-completion ca-certificates curl git less nano procps ripgrep openssh-client tini wget libicu76 gcc g++ libc6-dev make \
  && rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL https://dot.net/v1/dotnet-install.sh \
